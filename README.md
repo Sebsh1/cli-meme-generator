@@ -27,3 +27,4 @@ creates the following meme:
 ## TODO
 * Add more meme templates.
 * Add the ability to overlay images on top of the memes for personal flair, like your friend as the distracted boyfriend.
+* Add memes in gif format?
