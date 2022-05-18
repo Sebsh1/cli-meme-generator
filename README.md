@@ -4,7 +4,7 @@ A command-line tool for creating memes of common formats.
 ## Features
 * Supports the classic meme format with top/bottom text for any image.
 * Supports memes with text in non-standard locations, if the meta data is given.
-* Adding your own image macros is as simple as adding them to the `data/images` folder, and adding meta_data to `data/meta_data.txt` if they aren't top/bottom text memes.
+* Adding your own image macros is as simple as adding them to the `data/images/topbottom` folder, or to `data/images/custom` and adding meta_data to `data/meta_data.txt` if they aren't top/bottom text memes.
 * "Deep-Frying" of memes inspired by [r/deepfriedmemes](https://www.reddit.com/r/DeepFriedMemes/).
 
 ## How to use
@@ -16,7 +16,7 @@ Optional Arguments:
 
 Example of use:
 ```
-python create_meme.py boyfriend 'Making Meme Generators' 'Me' 'Writing my Thesis' -s example
+python meme.py boyfriend 'Making Meme Generators' 'Me' 'Writing my Thesis' -s example
 ```
 creates the following meme:  
 <img src="example.jpg" alt="example meme" width="400"/>
