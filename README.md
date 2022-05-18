@@ -16,7 +16,7 @@ Optional Arguments:
 
 Example of use:
 ```
-python create_meme.py boyfriend 'Making Meme Generators' 'Me' 'Writing my Thesis'
+python create_meme.py boyfriend 'Making Meme Generators' 'Me' 'Writing my Thesis' -s example
 ```
 creates the following meme:  
 <img src="example.jpg" alt="example meme" width="400"/>
