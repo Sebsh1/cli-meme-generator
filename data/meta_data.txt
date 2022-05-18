@@ -1,0 +1,9 @@
+{ 
+    'Distracted-Boyfriend.jpg': {
+        'textcolor': 'white',
+        'textpositions': [(333,222), (650,140), (975,245)]},
+
+    'drake-hotline-bling.jpg': {
+        'textcolor': 'black',
+        'textpositions': [(900,250), (900,900)]},
+}

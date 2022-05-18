@@ -1,3 +1,4 @@
+import ast
 import os
 import argparse
 import textwrap
@@ -6,12 +7,11 @@ import meme_addons
 
 def parse_args():
     parser = argparse.ArgumentParser(description='A CLI meme generator')
-    parser.add_argument("--meme", '-m', help="Name of meme template as base, partial names might be recognized", type=str)
-    parser.add_argument("--toptext", '-t', default='toptext', help="Top text of meme", type=str)
-    parser.add_argument("--bottomtext", '-b', default='bottomtext', help="Bottom text of meme", type=str)
+    parser.add_argument('meme', help="Name of meme template as base. Seperate words must be connected with hyphens. Partial names might be recognized", type=str, nargs=1)
+    parser.add_argument("text", default=['toptext', 'bottomtext'], help="Text to be diplayed on the meme, ordered from how it is displayed on the meme left to right", nargs='+')
+    parser.add_argument("--save", '-s', default=None, help="filename to save the meme as, not including file extension", type=str)
     parser.add_argument("--deepfry", '-df', action='store_true')
     args = parser.parse_args()
-
     return args
 
 def get_template_name(name):
@@ -25,25 +25,58 @@ def get_template_name(name):
 
     return template[0]
 
-def create_meme(args):
-    template_name = get_template_name(args.meme)
-    meme = Image.open('data/images/' + template_name)
-    w, h = meme.size
-
+def create_top_bottom_meme(template_name, args):
     font = ImageFont.truetype("data/fonts/impact.ttf", 30)
+    meme = Image.open('data/images/' + template_name)
+    w, h = meme.size    
     chars_per_line = int(w/font.size*2)
-    toptext_wrapped = "\n".join(textwrap.wrap(args.toptext, width=chars_per_line))
-    bottomtext_wrapped = "\n".join(textwrap.wrap(args.bottomtext, width=chars_per_line))
+    toptext_wrapped = "\n".join(textwrap.wrap(args.text[0], width=chars_per_line))
+    bottomtext_wrapped = "\n".join(textwrap.wrap(args.text[1], width=chars_per_line))
 
     meme_drawer = ImageDraw.Draw(meme)
     meme_drawer.text((w/2, 0), toptext_wrapped, font=font, anchor='ma', stroke_width=2, stroke_fill='black', align = "center")
     meme_drawer.text((w/2, h-1), bottomtext_wrapped, font=font, anchor='md', stroke_width=2, stroke_fill='black', align = "center")
 
+    return meme
+
+def create_nonstandard_meme(template_name, args):
+    font = ImageFont.truetype("data/fonts/impact.ttf", 30)
+    meme = Image.open('data/images/' + template_name)
+    w, h = meme.size   
+    chars_per_line = int(w/font.size*2)
+    meta_data = nonstandard_memes[template_name]
+    meme_drawer = ImageDraw.Draw(meme) 
+
+    for i, pos in enumerate(meta_data['textpositions']):
+        text_wrapped = "\n".join(textwrap.wrap(args.text[i], width=chars_per_line))
+        if meta_data['textcolor'] == 'white':
+            meme_drawer.text(pos, text_wrapped, font=font, anchor='ma', stroke_width=2, stroke_fill='black', align = "center")
+        else: 
+            meme_drawer.text(pos, text_wrapped, font=font, anchor='ma', fill=meta_data['textcolor'], align = "center")
+
+    return meme
+
+def create_meme(args):
+    template_name = get_template_name(args.meme[0])
+    
+    if template_name in nonstandard_memes.keys():
+        meme = create_nonstandard_meme(template_name, args)
+    else:
+        meme = create_top_bottom_meme(template_name, args)
+
     if args.deepfry:
         meme = meme_addons.deepfry(meme)
 
-    meme.show()
+    if args.save is not None:
+        filename = args.save + '.jpg'
+        meme.save(filename)
+        print('Meme was saved as ', filename)
+    else:
+        meme.show()
 
 if __name__ == '__main__':
     args = parse_args()
-    create_meme(args)
+    with open("data/meta_data.txt", 'r') as format_file:
+        meta_data = format_file.read()
+        nonstandard_memes = ast.literal_eval(meta_data)
+        create_meme(args)
