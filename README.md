@@ -19,7 +19,7 @@ Example of use:
 python create_meme.py boyfriend 'Making Meme Generators' 'Me' 'Writing my Thesis'
 ```
 creates the following meme:  
-
+![Example Meme](example.jpg)
 
 ## Requirements  
 `Pillow` for image manipulation.
